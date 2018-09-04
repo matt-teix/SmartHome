@@ -1,0 +1,89 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "homebridge-smartthings",
+        "scope": null,
+        "escapedName": "homebridge-smartthings",
+        "name": "homebridge-smartthings",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "C:\\Users\\Owner"
+    ]
+  ],
+  "_from": "homebridge-smartthings@latest",
+  "_id": "homebridge-smartthings@0.5.1",
+  "_inCache": true,
+  "_location": "/homebridge-smartthings",
+  "_nodeVersion": "4.4.7",
+  "_npmOperationalInternal": {
+    "host": "packages-18-east.internal.npmjs.com",
+    "tmp": "tmp/homebridge-smartthings-0.5.1.tgz_1485740849056_0.7165591795928776"
+  },
+  "_npmUser": {
+    "name": "pdlove",
+    "email": "pdlovelace@gmail.com"
+  },
+  "_npmVersion": "2.15.8",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "homebridge-smartthings",
+    "scope": null,
+    "escapedName": "homebridge-smartthings",
+    "name": "homebridge-smartthings",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/homebridge-smartthings/-/homebridge-smartthings-0.5.1.tgz",
+  "_shasum": "0ce287434c932ddfcff88871dd13a8c35b6c5a03",
+  "_shrinkwrap": null,
+  "_spec": "homebridge-smartthings",
+  "_where": "C:\\Users\\Owner",
+  "bugs": {
+    "url": "https://github.com/pdlove/homebridge-smartthings/issues"
+  },
+  "dependencies": {
+    "pubnub": ">=4.4.0"
+  },
+  "description": "HomeBridge plugin for Smart Things",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "0ce287434c932ddfcff88871dd13a8c35b6c5a03",
+    "tarball": "https://registry.npmjs.org/homebridge-smartthings/-/homebridge-smartthings-0.5.1.tgz"
+  },
+  "engines": {
+    "homebridge": ">=0.3.1",
+    "node": ">=0.12.0"
+  },
+  "gitHead": "3958e4de18d7acce258a30bb357977acc9a05714",
+  "homepage": "https://github.com/pdlove/homebridge-smartthings#readme",
+  "keywords": [
+    "homebridge-plugin",
+    "sensibo"
+  ],
+  "license": "ISC",
+  "maintainers": [
+    {
+      "name": "pdlove",
+      "email": "pdlovelace@gmail.com"
+    }
+  ],
+  "name": "homebridge-smartthings",
+  "optionalDependencies": {},
+  "preferGlobal": true,
+  "readme": "# homebridge-smartthings\n\n[![npm version](https://badge.fury.io/js/homebridge-smartthings.svg)](https://badge.fury.io/js/homebridge-smartthings)\nCurrent Smartapp version - 0.5.0\n\nIf you are upgrading from a prior version, make sure you are using the latest Smartapp.\n\n## Device Updates from SmartThings\n\nSmartThings has requested that this app not poll the server so much to see if there is data. We don't technically poll it enough to violate the posted rate limits, but I've made changes to improve performance with their advice.\nThere is a new configuration item to control how you receive updates called update_method.\nIf update_method is not set, \"direct\" is used.\nFull device dumps are always fetched regularly in case something has been missed. This is controlled via the \"polling_seconds\" configuration option and defaults to once an hour.\n\n### Updates via API\nThis method fires every x number of seconds when configured.\nThis option has proven to be reliable over the past year but is being deprecated due to the number of API calls required for realtime updates.\nYou can control the polling frequency with the \"update_seconds\" value. The default is changing to 30 seconds to comply with requests from SmartThings developers.\nIf you set it lower you will get a warning from the app but it will allow you at your own risk of the smartapp being disabled by them.\n\n### Direct Updates\nThis method is nearly instant.\nThis option allows the hub to send updates directly to your homebridge-smartthings installation.\nThe hub must be able to send an http packet to your device so make sure to allow incoming traffic on the applicable port.\nThe port used for this can be configured by the \"direct_port\" setting and defaults to 8000.\nThe program will attempt to determine your IP address automatically, but that can be overridden by \"direct_ip\" which is useful if you have multiple addresses.\nAs a note, the hub isn't actual doing any of the processing so if you lose Internet, updates will stop. I'm told it \"doesn't currently\" support it, so there is hope.\n\nWhen properly setup, you should see something like this in your Homebridge startup immediately after the PIN:\n```\n[1/29/2017, 8:28:45 AM] Homebridge is running on port 51826.\n[1/29/2017, 8:28:45 AM] [SmartThings] Direct Connect Is Listening On 192.168.0.49:8000\n[1/29/2017, 8:28:45 AM] [SmartThings] SmartThings Hub Communication Established\n```\n\n### PubNub Updates\nThis method is nearly instant.\nIf Direct Updates won't work for you, you can use PubNub as a go-between for the cloud.\nThe free account with them should work for most installations. If you look at their site, this use counts as 1 device and the messages are counted going and coming so it ends up being 500,000 updates a month on the free account.\nIf anyone actually has more update than that, I can look at consolidating updates by a timeframe and sending them in batches to reduce the message count used for updates.\nThis method requires you to give the smartapp your publish key and subscription key for PubNub and the smartapp needs the subscription key. It also requires a channel name.\nThe subscription key and channel are retrieved from the Smartapp to make sure they are always the same.\n\n## Installation\n\nInstallation comes in two parts:\n\n### SmartThings API installation\nA custom JSON API has been written to interface with Smartthings. If you have any other than the one called \"\" then you need to install the new one.\nThis plugin will NOT work with the original \"JSON API\" due to a lack of features.\n\nIf you installed the previous update that doesn't allow selecting devices, you need to goto \"My Locations\" and then \"List Smartapps\" to remove the multiple installation.\n\n* Log into your SmartThings account at https://graph.api.smartthings.com/\n* Goto \"My SmartApps\"\n* Click on Settings and add the repository with Owner of \"pdlove\" and name of \"homebridge-smartthings\" and branch of \"master\" and then click save.\n* Click \"Update From Repo\" and select \"homebridge-smartthings\"\n* You should have json-complete-api in the New section. Check it, check Publish at the bottom and click \"Execute Update\".\n\n* Click on the app in the list and then click \"App Settings\"\n* Scroll down to the OAuth section and click \"Enable OAuth in Smartapp\"\n* Select \"Update\" at the bottom.\n\n* In the SmartThings App, goto \"Marketplace\" and select \"SmartApps\". At the bottom of the list, select \"My Apps\"\n* Select \"JSON Complete API\" from the list.\n* Tap the plus next to an appropriate device group and then check off each device you would like to use.\n * There are several categories because of the way Smartthings assigns capabilities.\n  * Almost all devices contain the Refresh capability and are under the \"Most Devices\" group\n  * Some sensors don't have a refresh and are under the \"Sensor Devices\" group.\n  * Some devices, mainly Virtual Switches, only have the Switch Capability and are in the \"All Switches\".\n * If you select the same device in multiple categories it will only be shown once in HomeKit, so you can safely check them all in all groups.\n * If a device isn't listed, let me know by submitting an issue on GitHub.\n* If using PubNub for updates, scroll down and enter the Subscription Key, Publish Key and a channel name. The channel can be named anything, but it must match between the SmartApp installation and the config.json for homebridge.\n* Tap Done and then Done.\n\n### Homebridge Installation\n\n1. Install homebridge using: npm install -g homebridge\n2. Install this plugin using: npm install -g homebridge-smartthings\n3. Update your configuration file. See sample config.json snippet below.\n\n### Config.json Settings\n\nExample of all settings. Not all ssettings are required. Read the breakdown below.\n```\n\t{\n\t   \"platform\": \"homebridge-smartthings.SmartThings\",\n    \t\"name\": \"SmartThings\",\n        \"app_url\": \"https://graph.api.smartthings.com:443/api/smartapps/installations/\",\n        \"app_id\": \"THIS-SHOULD-BE-YOUR-APPID\",\n        \"access_token\": \"THIS-SHOULD-BE-YOUR-TOKEN\",\n        \"polling_seconds\": 3600,\n        \"update_method\": \"direct\",\n        \"direct_ip\": \"192.168.0.45\",\n        \"direct_port\": 8000,\n        \"api_seconds\": 30\n\t}\n```\n* \"platform\" and \"name\"\n**_Required_**\n * This information is used by homebridge to identify the plugin and should be the settings above.\n\n* \"app_url\", \"app_id\" and \"access_token\"\n**_Required_**\n * To get this information, open SmartThings on your phone, goto \"Automation\">\"SmartApps\">\"JSON Complete API\" and tap on Config\n * The app_url in the example may be different for you.\n\n* \"polling_seconds\"\n**_Optional_** Defaults to 3600\n * Identifies how often to get full updates. At this interval, homebridge-smartthings will request a complete device dump from the API just in case any subscription events have been missed.\n * This defaults to once every hour. I have had it set to daily in my installation with no noticable issues.\n\n* \"update_method\"\n**_Optional_** Defaults to direct\n * See *Device Updates from SmartThings* for more information.\n * Options are: \"direct\", \"pubnub\", \"api\" and a recommended in that order.\n\n\n* \"direct_ip\"\n**_Optional_** Defaults to first available IP on your computer\n * This setting only applies if update_method is direct.\n * Most installations won't need this, but if for any reason it can't identify your ip address correctly, use this setting to force the IP presented to SmartThings for the hub to send to.\n\n* \"direct_port\"\n**_Optional_** Defaults to 8000\n * This setting only applies if update_method is direct.\n * This is the port that homebridge-smartthings will listen on for traffic from your hub. Make sure your firewall allows incoming traffic on this port from your hub's IP address.\n\n* \"api_seconds\"\n**_Optional_** Defaults to 30\n * This setting only applies if update_method is api.\n * This is how often the api will poll for updates. This update method is not recommended.\n\n##Reporting Devices for Development\n\n* The first step is to install the smartapp to the device\n * This is done by opening SmartThings on your phone and going to \"My Home\">\"SmartApps\">\"JSON Complete API\". Tap all devices and make sure it is enabled in the list.\n * If you cannot find the device in this list, please submit an Issue on Github with the make/model of the device. More information will be needed, but that will be a good start.\n* The next step is to start Homebridge and watch the first part of the initialization where it says \"Device Added\"/\"Device Skipped\"\n * If it says \"Device Skipped\", copy/paste that entire line to an Issue on Github. It supplies all the information needed to get the device up an working if HomeKit can support it.\n * If it says \"Device Added\" then the device should appear in HomeKit. If specific function is missing, post the Device Added line and identify what you are missing from it.\n* If a large number of similar devices are Skipped or missing functionality, it may just be a Capability that is missing. If so, it will be listed in the \"Unknown Capabilities\" line item.\n\n##Errors while running\n\n* There have been alot of reports of errors causing issues with homebridge. Alot has been done to try and resolve this. Please post an issue for only this issue if you are incountering it.\n* If you receive an \"error at req\", this is normally caused by network issues and the plugin should always auto-recover. Please verify you have internet access on the device before posting about these. If you get one or two ENOTFOUND errors in the middle of the night, it is probably your modem resetting and is nothing to worry about. \n \n## What's New\n\n* 0.5.1\n * [Plugin] Fixed default value to be correct for update_method.\n * [Plugin] Added type detection for Water Sensor.\n\n\n* 0.5.0\n * Add support for PubNub and Direct updates. The legacy method using the API has been somewhat crippled in default settings.\n * [Plugin] Moved switches up in the order so that they switches with temperature sensors on them still add as switches.\n * [SmartApp] Updated icons to come from my own dropbox rather than \"some random guy on the internet\". The icon has also been changed to be a fusion of the JSON logo and the Smartthings logo.\n\n* 0.4.7\n * [Plugin] resolved issue where the callback could be called twice. \n \n* 0.4.6\n * [Plugin] Added explicit conversions to numeric for all numbers. When a streamed update would occurs, the value comes back as a string sometimes. This normally isn't an issue because math is done on alot of numbers but people with Celsius temperatures and brightness changes have been notably affected.\n \n* 0.4.5\n * [Plugin] Added rounding to ensure all numbers conform to HomeKit's attributes.\n * [Plugin] Increased Homebridge version in npm settings to ensure newer fixes and newer hap-nodejs which, again, has many fixes.\n \n* 0.4.4\n * [Plugin] Added code to ensure the callbacks are always called and that invalid results returns errors instead of crashing the process. Previously, the plugin would attempt to process an invalid result which would cause homebridge to have invalid attribute data. \n \n* 0.4.3\n * [Plugin] Adjusted default polling time from 1 hour to 1 minute to correct issue with devices getting lost. I'm still debugging to determine why it isn't working properly set to 1 hour.\n\n* 0.4.1\n * [SmartApp] Fixed accidental changeover to incorrectly using atomicstate.\n * [Plugin] Adjusted Thermostats to get/set the closes temperature when on auto instead of the average.\n * [Plugin] Changed regular updates to use the Smartapps subscription system to reduce the data coming across the Internet and increase the speed of retrieving updates.\n * [Plugin] Changed default polling_seconds to 3600 seconds to do a full refresh every hour.\n * [Plugin] Added new option update_seconds to define how often to poll for subscription updates and set default to 1. This was also tested at 0.5.\n * [Plugin] Fixed full refresh process to properly update the object with the new information.\n * [Plugin] Fixed an error caused because the result from the api was never checked if it was undefined when looking to see if it produced an error.\n\n* 0.4.0\n * [SmartApp] Rolled in the code needed to subscribe to device events and record changes. In addition, if the client hasn't polled for events in a while, it will stop recording events until the client starts polling.\n\n* 0.3.6\n * [SmartApp] Fixed a bug that caused none of the devices to be usable after the initial load.\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pdlove/homebridge-smartthings.git"
+  },
+  "scripts": {},
+  "version": "0.5.1"
+}
